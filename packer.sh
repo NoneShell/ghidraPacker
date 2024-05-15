@@ -13,7 +13,7 @@ fi;
 GHIDRA_DIR="${GHIDRA_APP_NAME}.app/Contents/MacOS"
 
 if [ -a "${GHIDRA_APP_NAME}.app" ]; then
-    echo "${PWD}/${GHIDRA_APP_NAME}.app already exists :("
+    echo "[!] ${PWD}/${GHIDRA_APP_NAME}.app already exists :("
     exit 1;
 fi;
 
@@ -26,10 +26,7 @@ chmod +x "${GHIDRA_DIR}/${GHIDRA_APP_NAME}"
 # create icon
 
 if command -v convert >/dev/null 2>&1; then
-    echo "ImageMagick is installed. Proceeding with icon conversion."
-
     ICONSET_DIR="${GHIDRA_DIR}/${GHIDRA_APP_NAME}.iconset"
-    echo $ICONSET_DIR
     mkdir -p "${ICONSET_DIR}"
 
     # Extract icons from .ico file
@@ -61,10 +58,9 @@ if command -v convert >/dev/null 2>&1; then
 
     # Clean up
     rm -r "${ICONSET_DIR}"
-
-    echo "Icon conversion complete. Generated app.icns file."
 else
-    echo "ImageMagick is not installed. Please install it to proceed with icon conversion."
+    echo "[!] ImageMagick is not installed. Please install it to proceed with icon conversion."
+    echo "brew install imagemagick"
     exit 1
 fi
 
@@ -94,5 +90,18 @@ cat <<EOL > "${GHIDRA_APP_NAME}.app/Contents/Info.plist"
 </plist>
 EOL
 
-echo "${PWD}/$GHIDRA_APP_NAME.app"
+# move the app to Applications
+if [ -d "/Applications/${GHIDRA_APP_NAME}.app" ]; then
+    echo "[!] App already exists in /Applications/${GHIDRA_APP_NAME}.app"
+    echo "replace it? [y/n] : Be Careful! This will delete the existing app."
+    read -r replace
+    if [ "${replace}" == "y" ]; then
+        rm -rf "/Applications/${GHIDRA_APP_NAME}.app"
+        mv "${GHIDRA_APP_NAME}.app" /Applications/
+    else
+        exit 1
+    fi
+else
+    mv "${GHIDRA_APP_NAME}.app" /Applications/
+fi
 

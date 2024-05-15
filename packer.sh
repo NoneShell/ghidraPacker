@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
-# brew install imagemagick
+
+# check args
+if [ -z "${1}" ]; then
+    echo "[!] Usage: packer.sh <ghidra_dir> [app_name]"
+    exit 1;
+fi;
+
 if [ -n "${2}" ]; then
     if [ "${2}" == "Ghidra" ]; then
         echo "[!] app name must not be Ghidra"
         exit 1;
     fi
+
+    if echo "${2}" | grep -q "[^a-zA-Z0-9_]"; then
+        echo "[!] app name must be alphanumeric"
+        exit 1;
+    fi
+
     GHIDRA_APP_NAME=${2}
 else
     GHIDRA_APP_NAME="ghidraRun"

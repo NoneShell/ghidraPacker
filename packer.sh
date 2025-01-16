@@ -7,8 +7,8 @@ if [ -z "${1}" ]; then
 fi;
 
 if [ -n "${2}" ]; then
-    if [ "${2}" == "Ghidra" ]; then
-        echo "[!] app name must not be Ghidra"
+    if [ "${2}" == "Ghidra" || "${2}" == "ghidra" ]; then
+        echo "[!] app name must not be Ghidra or ghidra"
         exit 1;
     fi
 
